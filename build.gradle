@@ -1,0 +1,34 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.0-alpha04'
+
+        // ADD 这是一个将接口和实现完全分离的gradle插件,适用于在使用第三方框架时进行解耦的场景。只需要在实现类上添加ServiceAgent注解，
+        // ServiceAgency会在项目构建阶段自动将实现和接口关联，开发者在使用的时候不需要传入实现，
+        // 可以通过把ServiceAgent注解添加到另一个实现类上来达到快速替换实现的目的
+        classpath 'com.buyi.huxq17:agencyplugin:1.1.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

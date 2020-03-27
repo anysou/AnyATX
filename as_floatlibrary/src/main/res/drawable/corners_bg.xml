@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--信息显示框背景，圆角处理-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#9A7C7A7A" />
+    <corners android:topLeftRadius="10dp"
+        android:topRightRadius="10dp"
+        android:bottomRightRadius="10dp"
+        android:bottomLeftRadius="10dp"/>
+</shape>
