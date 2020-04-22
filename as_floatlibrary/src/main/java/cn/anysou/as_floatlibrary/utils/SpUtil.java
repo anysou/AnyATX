@@ -16,7 +16,7 @@ public class SpUtil {
      * SharedPreferences存储在sd卡中的文件名字
      */
     private static String getSpName() {
-        return "fojing_sp";
+        return "AnyATX_sp";
     }
 
     /**

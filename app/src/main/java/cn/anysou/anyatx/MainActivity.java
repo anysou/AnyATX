@@ -11,10 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +40,7 @@ import cn.anysou.as_floatlibrary.menu.MenuItem;
 import cn.anysou.as_floatlibrary.permission.FloatPermissionManager;
 import cn.anysou.as_floatlibrary.utils.BackGroudSeletor;
 import cn.anysou.as_floatlibrary.utils.DensityUtil;
+import cn.anysou.as_floatlibrary.utils.SpUtil;
 import cn.anysou.as_floatlibrary.utils.Util;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,45 +68,122 @@ public class MainActivity extends AppCompatActivity {
 
     private String IMEI = "";                   //手机第一张卡的IMEI
     private TextView textView;
+    private EditText username;
+    private EditText password;
+    private EditText mlfile;
+    private EditText yfsjfile;
+    private CheckBox checkML;
+    private String MLagain = "0";
+    private boolean show_hide = false;
 
     //public int ShowItem = 0;                  //当前显示的界面 0=设置启动、1=浮球、2=信息框
 
     //================================ 各个按键功能 =============================================
+    public void DOWN(View view){
+        toast("脚本程序下载更新后台进行中。。。");
+        Termux_DOWN();
+    }
+    public void usb(View view){
+        boolean enableAdb = (Settings.Secure.getInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0) > 0);
+        if(enableAdb){
+            toast("USB调试已开启");
+        }else {
+            toast("USB调试未开启");
+        }
+    }
+    public void run(View view) {
+        Termux_PAUST(false);
+    }
+    public void paust(View view) {
+        Termux_PAUST(true);
+    }
     // 显示浮球按键
-    public void showFloatBall(View v) {
+    public void SSP(View v) {
         //toast("开始刷单");
         //日志窗口标题
         setInfoTitle("刷 单 测 试");
         mFloatballManager.closeMenu();
-        mFloatballManager.show();
+        //mFloatballManager.hide();
         Termux_VIDEOS("2");  //1=测试；2=正式
     }
+    //刷攒攒
     public void SZZ(View view) {
         mFloatballManager.show();
         // setFullScreen(v);   //显示全屏
         toast("开始刷攒攒");
         mFloatballManager.closeMenu();
         CallTermux callTermux = new CallTermux();
-        callTermux.call_file(getApplicationContext(),"run_ZQZAN.sh","",true);
-        mFloatballManager.closeMenu();
+        String user_name = username.getText().toString();
+        String pass_word = password.getText().toString();
+        if(!user_name.equals("") && !pass_word.equals("")){
+            String arg = user_name+" "+pass_word;
+            SpUtil.put(this,"user_name",user_name);
+            SpUtil.put(this,"pass_word",pass_word);
+            callTermux.call_file(getApplicationContext(),"run_ZQZAN.sh",arg,true);
+            mFloatballManager.closeMenu();
+        } else {
+            toast("攒攒用户名或密码都不能为空");
+        }
     }
-    //隐藏悬浮球
+    //显示隐藏悬浮球
     public void hideFloatBall(View view) {
-        mFloatballManager.hide();
+        if(show_hide) {
+            mFloatballManager.hide();
+            show_hide = false;
+        }
+        else {
+            mFloatballManager.show();
+            show_hide = true;
+        }
     }
     //显示红点+1
     public void ShowRed(View view) {
-        Termux_VIDEOS("");
+        mFloatballManager.addObtainNumer();
     }
     //隐藏红点
     public void HideRed(View view) {
-        Termux_EXIT();
+        mFloatballManager.setObrainVisibility(false);
     }
     //红点+1
     public void Red_ADD(){
         mFloatballManager.addObtainNumer();
     }
-
+    //秘乐
+    public void ML(View view) {
+        mFloatballManager.show();
+        // setFullScreen(v);   //显示全屏
+        toast("开始刷秘乐");
+        mFloatballManager.closeMenu();
+        CallTermux callTermux = new CallTermux();
+        String ml_file = mlfile.getText().toString();
+        if(!ml_file.equals("")){
+            String arg = ml_file+" "+MLagain;
+            SpUtil.put(this,"ml_file",ml_file);
+            callTermux.call_file(getApplicationContext(),"run_ML.sh",arg,true,true);
+            mFloatballManager.closeMenu();
+            checkML.setChecked(false); //取消勾选
+        } else {
+            toast("秘乐用户文件名不能为空");
+        }
+    }
+    //影粉世家
+    public void YFSJ(View view) {
+        mFloatballManager.show();
+        // setFullScreen(v);   //显示全屏
+        toast("开始刷影粉世家");
+        mFloatballManager.closeMenu();
+        CallTermux callTermux = new CallTermux();
+        String ml_file = mlfile.getText().toString();
+        if(!ml_file.equals("")){
+            String arg = ml_file+" "+MLagain;
+            SpUtil.put(this,"ml_file",ml_file);
+            callTermux.call_file(getApplicationContext(),"run_YFSJ.sh",arg,true,true);
+            mFloatballManager.closeMenu();
+            checkML.setChecked(false); //取消勾选
+        } else {
+            toast("影粉世家用户文件名不能为空");
+        }
+    }
 
     //生命周期为onCreate->onStart->onResume->onAttachedToWindow
     @Override
@@ -110,6 +192,41 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.textView);
+        username = (EditText) findViewById(R.id.editTextUserName);
+        password = (EditText) findViewById(R.id.editTextPassword);
+        mlfile = (EditText) findViewById(R.id.editTextMLFILE);
+        yfsjfile = (EditText) findViewById(R.id.editTextYFSJFile);
+        checkML = (CheckBox) findViewById(R.id.checkBoxML);
+
+        checkML.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    MLagain = "1";
+                    toast("选择秘乐或影粉世家用户列表从头开始刷");
+                }else{
+                    MLagain = "0";
+                    toast("选择秘乐或影粉世家用户列表正常刷");
+                }
+            }
+        });
+
+
+        String user_name = String.valueOf(SpUtil.get(this,"user_name",""));
+        String pass_word = String.valueOf(SpUtil.get(this,"pass_word",""));
+        String ml_file = String.valueOf(SpUtil.get(this,"ml_file",""));
+        String yfsj_file = String.valueOf(SpUtil.get(this,"yfsj_file",""));
+        if(!user_name.equals("") && !pass_word.equals("")){
+            username.setText(user_name);
+            password.setText(pass_word);
+        }
+        if(!ml_file.equals("")){
+            mlfile.setText(ml_file);
+        }
+        if(!yfsj_file.equals("")){
+            yfsjfile.setText(yfsj_file);
+        }
+
 
         // 1、让本应用APP全屏显示
         if(isfull) {
@@ -150,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                     if(id.equals("IMEI")){
                         IMEI = msg;
                         toast("手机IMEI="+IMEI);
-                        textView.setText(IMEI);
+                        textView.setText(textView.getText().toString()+"\n "+IMEI);
                     } else {
                         Integer index = idList.indexOf(id);
                         if (index >= 0) {
@@ -181,8 +298,10 @@ public class MainActivity extends AppCompatActivity {
         // 7、判断是否为模拟器
         if(Util.isEmulator(this)){
             toast("当前环境为模拟器，需要授权使用！");
+            textView.setText(textView.getText().toString()+"\n 是模拟器");
         } else {
             toast("是手机！");
+            textView.setText(textView.getText().toString()+"\n 是手机");
         }
     }
 
@@ -331,6 +450,7 @@ public class MainActivity extends AppCompatActivity {
         //2、 根据手机屏幕尺寸 动态修改 布局宽度（230dp为最宽，不能大于手机屏幕宽度的一半）
         int mScreenWidthDP = DensityUtil.px2dip(getApplicationContext(),mFloatballManager.mScreenWidth); //PX2DP
         if(mScreenWidthDP/2<=230) {
+            //修改信息框宽度
             int width = DensityUtil.dip2px(getApplicationContext(), mScreenWidthDP/2-5);
             final LinearLayout mLinearLayout = mInfoManager.mInfoView.findViewById(R.id.linearMain);
             ViewGroup.LayoutParams lp = mLinearLayout.getLayoutParams();
@@ -393,12 +513,15 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(Title);
     }
     //================================= 与 Termux的 代码功能调用 ===============================
+    //调用下载
+    private void Termux_DOWN(){
+        mcallTermux.call_file(getApplicationContext(),"run_DOWN.sh","",false);
+    }
+    //刷视频
     private void Termux_VIDEOS(String ARG){
         mcallTermux.call_file(getApplicationContext(),"run_VIDEOS.sh",ARG,inTerminal,true);
     }
-    private void Termux_ZQZAN(String ARG){
-        mcallTermux.call_file(getApplicationContext(),"run_ZQZAN.sh",ARG,inTerminal,true);
-    }
+    //暂停与继续
     private void Termux_PAUST(boolean mode){
         if(mode)
             mcallTermux.call_file(getApplicationContext(),"run_VS_PAUST.sh","1",false);
@@ -434,6 +557,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     // 继承 控件生命周期回调
     public class ActivityLifeCycleListener implements Application.ActivityLifecycleCallbacks {
