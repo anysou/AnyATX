@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkML;
     private String MLagain = "0";
     private boolean show_hide = false;
+    private EditText atxjb;
 
     //public int ShowItem = 0;                  //当前显示的界面 0=设置启动、1=浮球、2=信息框
 
@@ -173,10 +175,10 @@ public class MainActivity extends AppCompatActivity {
         toast("开始刷影粉世家");
         mFloatballManager.closeMenu();
         CallTermux callTermux = new CallTermux();
-        String ml_file = mlfile.getText().toString();
-        if(!ml_file.equals("")){
-            String arg = ml_file+" "+MLagain;
-            SpUtil.put(this,"ml_file",ml_file);
+        String yfsj_file = yfsjfile.getText().toString();
+        if(!yfsj_file.equals("")){
+            String arg = yfsj_file+" "+MLagain;
+            SpUtil.put(this,"yfsj_file",yfsj_file);
             callTermux.call_file(getApplicationContext(),"run_YFSJ.sh",arg,true,true);
             mFloatballManager.closeMenu();
             checkML.setChecked(false); //取消勾选
@@ -184,6 +186,23 @@ public class MainActivity extends AppCompatActivity {
             toast("影粉世家用户文件名不能为空");
         }
     }
+    //执行脚本名
+    public void Run_ATXJB(View view){
+        mFloatballManager.show();
+        // setFullScreen(v);   //显示全屏
+        toast("开始执行指定脚本");
+        mFloatballManager.closeMenu();
+        CallTermux callTermux = new CallTermux();
+        String atx_jb = atxjb.getText().toString();
+        if(!atx_jb.equals("")){
+            SpUtil.put(this,"atx_jb",atx_jb);
+            callTermux.call_file(getApplicationContext(),"run_ATXJB.sh",atx_jb,true,true);
+            mFloatballManager.closeMenu();
+        } else {
+            toast("开始执行指定脚本名不能为空");
+        }
+    }
+
 
     //生命周期为onCreate->onStart->onResume->onAttachedToWindow
     @Override
@@ -192,11 +211,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.textView);
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());  //实现textview滚动条
+
         username = (EditText) findViewById(R.id.editTextUserName);
         password = (EditText) findViewById(R.id.editTextPassword);
         mlfile = (EditText) findViewById(R.id.editTextMLFILE);
         yfsjfile = (EditText) findViewById(R.id.editTextYFSJFile);
         checkML = (CheckBox) findViewById(R.id.checkBoxML);
+        atxjb = (EditText) findViewById(R.id.editTextATXJB);
 
         checkML.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -216,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         String pass_word = String.valueOf(SpUtil.get(this,"pass_word",""));
         String ml_file = String.valueOf(SpUtil.get(this,"ml_file",""));
         String yfsj_file = String.valueOf(SpUtil.get(this,"yfsj_file",""));
+        String atx_jb = String.valueOf(SpUtil.get(this,"atx_jb",""));
         if(!user_name.equals("") && !pass_word.equals("")){
             username.setText(user_name);
             password.setText(pass_word);
@@ -225,6 +248,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if(!yfsj_file.equals("")){
             yfsjfile.setText(yfsj_file);
+        }
+        if(!atx_jb.equals("")){
+            atxjb.setText(atx_jb);
         }
 
 
@@ -264,10 +290,10 @@ public class MainActivity extends AppCompatActivity {
                 if(s.contains("###")){
                     String id = s.split("###")[0];
                     String msg = s.split("###")[1];
-                    if(id.equals("IMEI")){
-                        IMEI = msg;
-                        toast("手机IMEI="+IMEI);
-                        textView.setText(textView.getText().toString()+"\n "+IMEI);
+                    if(id.equals("SHOW")){
+                        textView.setText(msg);
+                    }else if(id.equals("ADDSHOW")) {
+                        textView.setText(textView.getText().toString() + "\n " + msg);
                     } else {
                         Integer index = idList.indexOf(id);
                         if (index >= 0) {

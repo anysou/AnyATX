@@ -17,6 +17,6 @@ public class ATXReceiver extends BroadcastReceiver {
         String msg = intent.getStringExtra("msg");  //内容
         String id = intent.getStringExtra("id");    //编号
         LiveEventBus.get("run").post(id+"###"+msg); //发送一条即时消息框架 “run” 的值
-        //Toast.makeText(context,msg+id,Toast.LENGTH_LONG).show();
+        //Toast.makeText(context,id+"###"+msg,Toast.LENGTH_LONG).show();
     }
 }

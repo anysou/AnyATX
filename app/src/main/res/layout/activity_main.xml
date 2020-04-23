@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/editTextATXJB"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:hint="请输入AnyATX脚本名"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintStart_toStartOf="@+id/editTextYFSJFile" />
+
     <Button
         android:id="@+id/buttonYFSJ"
         android:layout_width="wrap_content"
@@ -150,8 +162,8 @@
         android:id="@+id/buttonML"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="刷 秘乐"
         android:onClick="ML"
+        android:text="刷 秘乐"
         app:layout_constraintBottom_toBottomOf="@+id/editTextMLFILE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editTextMLFILE"
@@ -169,14 +181,17 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="382dp"
-        android:layout_height="247dp"
+        android:layout_width="370dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="#EFE6E6"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintBottom_toTopOf="@+id/editTextATXJB"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -186,10 +201,11 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:onClick="paust"
         android:text="暂停"
+        app:layout_constraintEnd_toStartOf="@+id/button6"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextYFSJFile" />
 
@@ -203,7 +219,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button2"
-        app:layout_constraintTop_toTopOf="@+id/button2" />
+        app:layout_constraintTop_toTopOf="@+id/button2"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button7"
@@ -224,7 +241,16 @@
         app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toTopOf="@+id/button5" />
 
-
+    <Button
+        android:id="@+id/buttonRUN"
+        android:layout_width="86dp"
+        android:layout_height="46dp"
+        android:onClick="Run_ATXJB"
+        android:text="执行脚本"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextATXJB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextATXJB"
+        app:layout_constraintTop_toTopOf="@+id/editTextATXJB" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
